@@ -20,6 +20,25 @@ const getRandomPairings = (employees, previousAssignments) => {
             const giver = employees[i];
             const receiver = shuffled[i];
 
+            let isFieldsPresent = false;
+            if (giver['Employee_Gender'] && giver['Employee_Team']) {
+                isFieldsPresent = true
+            }
+
+            // let constraints = false
+            if (isFieldsPresent) {
+                if (previousMap.get(giver.Employee_EmailID) !== receiver.Employee_EmailID) {
+                    if (giver?.Employee_Gender === receiver?.Employee_Gender) {
+                        // constraints = true
+                        isValid = false;
+                        break;
+                    } else if (giver?.Employee_Team === receiver?.Employee_Team) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+
             if (
                 giver.id === receiver.id ||
                 previousMap.get(giver.Employee_EmailID) === receiver.Employee_EmailID
@@ -31,8 +50,12 @@ const getRandomPairings = (employees, previousAssignments) => {
             assignments.push({
                 Employee_Name: giver['Employee_Name'],
                 Employee_EmailID: giver.Employee_EmailID,
+                Employee_Gender: giver.Employee_Gender ?? '',
+                Employee_Team: giver?.Employee_Team ?? '',
                 Secret_Child_Name: receiver['Employee_Name'],
-                Secret_Child_EmailID: receiver.Employee_EmailID
+                Secret_Child_EmailID: receiver.Employee_EmailID,
+                Secret_Child_Gender: receiver?.Employee_Gender ?? '',
+                Secret_Child_Team: receiver?.Employee_Team ?? '',
             });
         }
     }
